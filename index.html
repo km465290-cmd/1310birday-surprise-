@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hi, Love!</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap">
+<style>
+:root{--bg:#4C1D3D;--fg:#FFBB94;--pink:#FB9590;--rose:#DC586D;--berry:#A33757;--wine:#852E4E}
+*{box-sizing:border-box}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font-family:'VT323','Courier New',monospace;font-size:24px;text-align:center;overflow-x:hidden;image-rendering:pixelated}
+h1,h2,.px{font-family:'Press Start 2P','Courier New',monospace;font-weight:400;line-height:1.5}
+.screen{display:none;min-height:100vh;padding:24px 16px;flex-direction:column;align-items:center;justify-content:center;gap:18px;position:relative}
+.screen.on{display:flex;animation:pop .4s steps(4)}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.card{border:4px solid var(--fg);background:var(--wine);padding:28px 18px;max-width:520px;width:100%;box-shadow:8px 8px 0 #000a;position:relative;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+h1{font-size:clamp(26px,9vw,46px);margin:0;color:var(--fg);text-shadow:4px 4px 0 var(--bg)}
+h2{font-size:clamp(14px,4.6vw,22px);margin:0;text-shadow:3px 3px 0 var(--bg)}
+p{margin:0;font-size:clamp(22px,5vw,28px);line-height:1.15}
+.hearts{display:flex;gap:6px}
+.heart{width:28px;height:26px;animation:beat 1s steps(2) infinite}
+.heart:nth-child(2n){animation-delay:.25s}
+@keyframes beat{50%{transform:translateY(-5px)}}
+.btns{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;min-height:64px;align-items:center}
+button{font-family:'Press Start 2P','Courier New',monospace;font-size:14px;color:var(--bg);background:var(--fg);border:4px solid var(--bg);outline:4px solid var(--fg);padding:14px 20px;cursor:pointer;box-shadow:inset -4px -4px 0 var(--pink);touch-action:manipulation}
+button:active{transform:translate(3px,3px)}
+#no{background:var(--pink)}
+.spark{position:absolute;width:10px;height:10px;background:var(--pink);box-shadow:10px 0 var(--pink),-10px 0 var(--pink),0 10px var(--pink),0 -10px var(--pink);animation:tw 1.6s steps(2) infinite}
+@keyframes tw{50%{opacity:.2}}
+.flame{animation:fl .3s steps(2) infinite}
+@keyframes fl{50%{transform:translateY(-1px);opacity:.8}}
+#cake{width:min(300px,78vw);height:auto;shape-rendering:crispEdges}
+#letter{min-height:210px;text-align:left;white-space:pre-wrap;font-size:clamp(22px,5.4vw,28px);line-height:1.2}
+.cf{position:fixed;top:-20px;width:12px;height:12px;z-index:9;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+.cdbox{border:3px dashed var(--fg);padding:10px 14px;font-family:'Press Start 2P','Courier New',monospace;font-size:12px;line-height:1.8}
+#cd{font-size:15px;color:var(--pink)}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:#000b;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+input#pw{width:100%;background:var(--bg);color:var(--fg);border:4px solid var(--fg);font-family:'VT323','Courier New',monospace;font-size:26px;padding:10px;text-align:center;outline:none}
+.shake{animation:shk .3s steps(4)}
+@keyframes shk{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+#mute{position:fixed;top:10px;right:10px;z-index:60;padding:8px 10px;font-size:10px}
+.cp{display:block;width:100%;margin:10px 0;text-align:left;font-size:11px;line-height:1.7;padding:12px}
+.cp.used{opacity:.5;text-decoration:line-through}
+.btnlink{display:inline-block;font-family:'Press Start 2P','Courier New',monospace;font-size:12px;line-height:1.6;color:var(--bg);background:var(--pink);border:4px solid var(--bg);outline:4px solid var(--fg);padding:12px 16px;text-decoration:none}
+.hide{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+
+<section class="screen on" id="s1">
+  <div class="spark" style="top:12%;left:10%"></div><div class="spark" style="top:70%;right:9%"></div><div class="spark" style="top:25%;right:14%"></div>
+  <div class="card">
+    <div class="hearts" id="hearts"></div>
+    <h1>HI, LOVE!</h1>
+    <p>ARE YOU EXCITED FOR YOUR PREACIOUS BIRTHDAY COMING ON DEC 9 BABYYY?</p>
+    <div class="cdbox">HER BIRTHDAY IN<br><span id="cd"></span></div>
+    <div class="btns" id="btnrow">
+      <button id="yes">Yes</button>
+      <button id="no">No</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="s2">
+  <h2 id="hb"></h2>
+  <svg id="cake" viewBox="0 0 64 56" xmlns="http://www.w3.org/2000/svg">
+    <g id="candles">
+      <g><rect x="14" y="14" width="3" height="8" fill="#FB9590"/><g class="flame f"><rect x="14" y="8" width="3" height="5" fill="#FFBB94"/><rect x="15" y="10" width="1" height="3" fill="#DC586D"/></g></g>
+      <g><rect x="25" y="14" width="3" height="8" fill="#FB9590"/><g class="flame f"><rect x="25" y="8" width="3" height="5" fill="#FFBB94"/><rect x="26" y="10" width="1" height="3" fill="#DC586D"/></g></g>
+      <g><rect x="36" y="14" width="3" height="8" fill="#FB9590"/><g class="flame f"><rect x="36" y="8" width="3" height="5" fill="#FFBB94"/><rect x="37" y="10" width="1" height="3" fill="#DC586D"/></g></g>
+      <g><rect x="47" y="14" width="3" height="8" fill="#FB9590"/><g class="flame f"><rect x="47" y="8" width="3" height="5" fill="#FFBB94"/><rect x="48" y="10" width="1" height="3" fill="#DC586D"/></g></g>
+    </g>
+    <rect x="8" y="22" width="48" height="6" fill="#FFBB94"/>
+    <rect x="8" y="28" width="48" height="10" fill="#DC586D"/>
+    <rect x="12" y="28" width="4" height="4" fill="#FFBB94"/><rect x="26" y="28" width="4" height="3" fill="#FFBB94"/><rect x="42" y="28" width="4" height="5" fill="#FFBB94"/>
+    <rect x="4" y="38" width="56" height="12" fill="#A33757"/>
+    <rect x="10" y="42" width="3" height="3" fill="#FFBB94"/><rect x="24" y="44" width="3" height="3" fill="#FB9590"/><rect x="38" y="41" width="3" height="3" fill="#FFBB94"/><rect x="50" y="44" width="3" height="3" fill="#FB9590"/>
+    <rect x="0" y="50" width="64" height="5" fill="#852E4E"/>
+  </svg>
+  <p id="hint">Make a wish, then blow out the candles!</p>
+  <button id="blow">Blow candles</button>
+</section>
+
+<section class="screen" id="s3">
+  <div class="card">
+    <div class="hearts" id="hearts2"></div>
+    <h2 id="to"></h2>
+    <div id="letter"></div>
+    <button id="secretbtn" class="hide">Secret</button>
+    <button id="couponbtn" class="hide">Coupons</button>
+    <button id="replay" class="hide">Replay</button>
+  </div>
+</section>
+
+<div class="modal hide" id="modal"><div class="card" style="min-height:0">
+  <h2>SECRET MESSAGE</h2>
+  <div id="lock" style="width:100%;display:flex;flex-direction:column;gap:14px;align-items:center">
+    <p id="hintp"></p>
+    <input id="pw" type="password" placeholder="password" autocomplete="off">
+    <p id="err" style="color:var(--pink);min-height:1.2em"></p>
+    <div class="btns"><button id="unlock">Unlock</button><button id="close1">Close</button></div>
+  </div>
+  <div id="secret" class="hide" style="width:100%">
+    <div id="stext" style="text-align:left;white-space:pre-wrap;min-height:120px;font-size:26px"></div>
+    <div class="btns"><button id="close2">Close</button></div>
+  </div>
+</div></div>
+
+<audio id="bgm" src="Music1.m4a" loop preload="auto"></audio>
+<button id="mute" class="hide">MUSIC: ON</button>
+
+<div class="modal hide" id="cpmodal"><div class="card" style="min-height:0;max-height:90vh;overflow:auto">
+  <h2>LOVE COUPONS</h2>
+  <p>Tap one to redeem it!</p>
+  <div id="cplist" style="width:100%"></div>
+  <p id="cpmsg" style="min-height:1.2em;color:var(--pink)"></p>
+  <a id="cpsend" class="btnlink hide" target="_blank" rel="noopener"></a>
+  <button id="cpclose">Close</button>
+</div></div>
+
+<script>
+/* ====== EDIT THESE ====== */
+var CONFIG = {
+  whatsapp: "",
+  coupons: ["One big warm hug", "A movie date, your pick", "Your favourite food, my treat", "One whole day of no arguments", "A long walk with chai", "One wish, granted"],
+  birthday: "12-09",
+  password: "9",
+  hint: "its my fav number",
+  secret: "YOU ARE THE PUREST SOUL I HAVE EVER SEEN LOVE YOU 💕❤️",
+  name: "BUBUU",
+  from: "Duduu",
+  message: "Advance happiest birthday babyyyyyy!\n\nYou are the one I will love even after I die. You are the most precious person in this world for me.\n\nYour birthday is coming and I am very excited for it.\n\nI'll always try my bestestest to keep you happy every day.\n\nLove you 💕 babyyy"
+};
+/* ======================== */
+
+var $ = function(id){return document.getElementById(id)};
+function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on')});$(id).classList.add('on');window.scrollTo(0,0)}
+
+function heartSVG(){return '<svg class="heart" viewBox="0 0 7 6" shape-rendering="crispEdges"><path fill="#DC586D" d="M1 0h2v1h1V0h2v1h1v2H6v1H5v1H4v1H3V5H2V4H1V3H0V1h1z"/><path fill="#FB9590" d="M1 1h1v1H1z"/></svg>'}
+['hearts','hearts2'].forEach(function(id){var h='';for(var i=0;i<5;i++)h+=heartSVG();$(id).innerHTML=h});
+
+function confetti(n){
+  var cols=['#FFBB94','#FB9590','#DC586D','#A33757'];
+  for(var i=0;i<n;i++){
+    var d=document.createElement('div');d.className='cf';
+    d.style.left=Math.random()*100+'vw';
+    d.style.background=cols[i%4];
+    d.style.animationDuration=(2+Math.random()*2.5)+'s';
+    d.style.animationDelay=(Math.random()*.6)+'s';
+    document.body.appendChild(d);
+    setTimeout(function(el){el.remove()},5500,d);
+  }
+}
+
+var typing;
+function type(el,text,done){
+  clearInterval(typing);el.textContent='';var i=0;
+  typing=setInterval(function(){
+    el.textContent+=text.charAt(i++);
+    if(i>=text.length){clearInterval(typing);if(done)done()}
+  },45);
+}
+
+var tries=0;
+var lines=["No","Are you sure?","Really?","Please?","Pretty please?","Okay... Yes"];
+var no=$('no');
+function dodge(e){
+  if(e){e.preventDefault()}
+  tries++;
+  if(tries>=lines.length-1){no.textContent=lines[lines.length-1];no.onclick=go;return}
+  no.textContent=lines[tries];
+  var card=no.closest('.card').getBoundingClientRect();
+  no.style.position='fixed';
+  var x=card.left+Math.random()*(card.width-no.offsetWidth-8)+4;
+  var y=card.top+Math.random()*(card.height-no.offsetHeight-8)+4;
+  no.style.left=x+'px';no.style.top=y+'px';
+  $('yes').style.transform='scale('+(1+tries*.12)+')';
+}
+no.addEventListener('mouseenter',dodge);
+no.addEventListener('touchstart',dodge,{passive:false});
+no.onclick=dodge;
+
+var bgm=$('bgm');bgm.volume=0.6;
+function playMusic(){
+  var p=bgm.play();
+  if(p&&p.catch)p.catch(function(){});
+  $('mute').classList.remove('hide');
+}
+$('mute').onclick=function(){
+  if(bgm.paused){bgm.play();started=true;this.textContent='MUSIC: ON'}
+  else{bgm.pause();started=true;this.textContent='MUSIC: OFF'}
+};
+function go(){
+  playMusic();
+  show('s2');
+  $('hb').textContent='HAPPY BIRTHDAY, '+CONFIG.name.toUpperCase()+'!';
+  confetti(40);
+}
+$('yes').onclick=go;
+
+var started=false;
+function firstPlay(e){
+  if(started||(e&&e.target&&e.target.id==='mute'))return;
+  var p=bgm.play();
+  if(p&&p.then)p.then(function(){started=true;$('mute').textContent='MUSIC: ON'}).catch(function(){});
+}
+$('mute').classList.remove('hide');$('mute').textContent='MUSIC: OFF';
+firstPlay();
+['pointerup','touchend','click','keydown'].forEach(function(ev){
+  document.addEventListener(ev,firstPlay,{passive:true});
+});
+
+$('blow').onclick=function(){
+  document.querySelectorAll('.f').forEach(function(f){f.style.display='none'});
+  $('hint').textContent='Wish granted!';
+  $('blow').classList.add('hide');
+  confetti(90);
+  setTimeout(function(){
+    show('s3');
+    $('to').textContent='FOR '+CONFIG.name.toUpperCase();
+    type($('letter'),CONFIG.message+'\n\n- '+CONFIG.from,function(){$('replay').classList.remove('hide');$('secretbtn').classList.remove('hide');$('couponbtn').classList.remove('hide')});
+  },1800);
+};
+
+$('replay').onclick=function(){
+  tries=0;no.textContent='No';no.style.position='';no.onclick=dodge;$('yes').style.transform='';
+  document.querySelectorAll('.f').forEach(function(f){f.style.display=''});
+  $('blow').classList.remove('hide');$('hint').textContent='Make a wish, then blow out the candles!';
+  $('replay').classList.add('hide');$('secretbtn').classList.add('hide');$('couponbtn').classList.add('hide');
+  show('s1');
+};
+
+/* countdown */
+function pad(n){return n<10?'0'+n:n}
+function nextBday(){
+  var p=CONFIG.birthday.split('-'),n=new Date();
+  var today=new Date(n.getFullYear(),n.getMonth(),n.getDate());
+  var t=new Date(n.getFullYear(),+p[0]-1,+p[1]);
+  if(t<today)t=new Date(n.getFullYear()+1,+p[0]-1,+p[1]);
+  return {t:t,today:today};
+}
+function tick(){
+  var b=nextBday(),n=new Date();
+  if(+b.t===+b.today){$('cd').textContent='TODAY IS YOUR DAY!';return}
+  var s=Math.floor((b.t-n)/1000);
+  var d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);
+  $('cd').textContent=d+'d '+pad(h)+'h '+pad(m)+'m '+pad(s%60)+'s';
+}
+tick();setInterval(tick,1000);
+
+/* secret message */
+$('secretbtn').onclick=function(){
+  $('hintp').textContent='Hint: '+CONFIG.hint;
+  $('err').textContent='';$('pw').value='';
+  $('lock').classList.remove('hide');$('secret').classList.add('hide');
+  $('modal').classList.remove('hide');
+  setTimeout(function(){$('pw').focus()},50);
+};
+function closeM(){$('modal').classList.add('hide')}
+$('close1').onclick=closeM;$('close2').onclick=closeM;
+$('unlock').onclick=function(){
+  if($('pw').value.trim().toLowerCase()===CONFIG.password.toLowerCase()){
+    $('lock').classList.add('hide');$('secret').classList.remove('hide');
+    type($('stext'),CONFIG.secret);hearts(30,true);confetti(40);
+  }else{
+    $('err').textContent='Wrong password, try again!';
+    var p=$('pw');p.classList.remove('shake');void p.offsetWidth;p.classList.add('shake');
+  }
+};
+$('pw').onkeydown=function(e){if(e.key==='Enter')$('unlock').click()};
+
+/* love coupons */
+function loadDone(){var d={};try{d=JSON.parse(localStorage.getItem('cpdone')||'{}')}catch(e){}return d}
+function saveDone(d){try{localStorage.setItem('cpdone',JSON.stringify(d))}catch(e){}}
+function renderCoupons(){
+  var done=loadDone(),box=$('cplist');box.innerHTML='';
+  CONFIG.coupons.forEach(function(c,i){
+    var b=document.createElement('button');
+    b.className='cp'+(done[i]?' used':'');
+    b.textContent=(done[i]?'REDEEMED: ':'')+c;
+    b.onclick=function(){
+      if(done[i])return;
+      done[i]=1;saveDone(done);renderCoupons();
+      hearts(25,true);confetti(30);
+      $('cpmsg').textContent='Redeemed! '+c;
+      var text='Coupon redeemed: '+c+' \u{1F495} - from '+CONFIG.name;
+      var a=$('cpsend');
+      a.href='https://wa.me/'+CONFIG.whatsapp+'?text='+encodeURIComponent(text);
+      a.textContent='Tell '+CONFIG.from;
+      if(CONFIG.whatsapp)a.classList.remove('hide');else a.classList.add('hide');
+    };
+    box.appendChild(b);
+  });
+}
+$('couponbtn').onclick=function(){
+  $('cpmsg').textContent='';$('cpsend').classList.add('hide');
+  renderCoupons();$('cpmodal').classList.remove('hide');
+};
+$('cpclose').onclick=function(){$('cpmodal').classList.add('hide')};
+</script>
+</body>
+</html>
