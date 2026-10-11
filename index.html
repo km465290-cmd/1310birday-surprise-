@@ -44,6 +44,10 @@ input#pw{width:100%;background:var(--bg);color:var(--fg);border:4px solid var(--
 .cp{display:block;width:100%;margin:10px 0;text-align:left;font-size:11px;line-height:1.7;padding:12px}
 .cp.used{opacity:.5;text-decoration:line-through}
 .btnlink{display:inline-block;font-family:'Press Start 2P','Courier New',monospace;font-size:12px;line-height:1.6;color:var(--bg);background:var(--pink);border:4px solid var(--bg);outline:4px solid var(--fg);padding:12px 16px;text-decoration:none}
+/* QUIZ */
+.qo{display:block;width:100%;margin:10px 0;text-align:left;font-size:22px;line-height:1.2;padding:14px 18px;border-radius:18px;background:#fff;color:#B76E79;border:1px solid #F0C9CE;box-shadow:0 4px 12px rgba(183,110,121,.15)}
+.qo.ok{background:linear-gradient(135deg,#E3A0AA,#B76E79);color:#fff;border-color:transparent}
+.qo.no{opacity:.45}
 .hide{display:none!important}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 /* ROSEGOLD */
@@ -102,6 +106,8 @@ input#pw{font-size:24px}
 .hsp{position:fixed;pointer-events:none;z-index:0;animation:htw ease-in-out infinite;filter:drop-shadow(0 0 5px currentColor)}
 @keyframes htw{0%,100%{opacity:0;transform:scale(.3) rotate(-12deg)}50%{opacity:.95;transform:scale(1) rotate(12deg)}}
 @media (prefers-reduced-motion:reduce){.hsp{display:none}}
+/* QUIZ END */
+#qres{font-size:clamp(24px,7vw,32px);line-height:1.2}
 </style>
 </head>
 <body>
@@ -147,7 +153,7 @@ input#pw{font-size:24px}
     <h2 id="to"></h2>
     <div id="letter"></div>
     <button id="secretbtn" class="hide">Secret</button>
-    <button id="couponbtn" class="hide">Coupons</button>
+    <button id="quizbtn" class="hide">Quiz</button>
     <button id="replay" class="hide">Replay</button>
   </div>
 </section>
@@ -169,20 +175,18 @@ input#pw{font-size:24px}
 <audio id="bgm" src="Music1.m4a" loop preload="auto"></audio>
 <button id="mute" class="hide">MUSIC: ON</button>
 
-<div class="modal hide" id="cpmodal"><div class="card" style="min-height:0;max-height:90vh;overflow:auto">
-  <h2>Love Coupons</h2>
-  <p>Tap one to redeem it!</p>
-  <div id="cplist" style="width:100%"></div>
-  <p id="cpmsg" style="min-height:1.2em;color:var(--pink)"></p>
-  <a id="cpsend" class="btnlink hide" target="_blank" rel="noopener"></a>
-  <button id="cpclose">Close</button>
+<div class="modal hide" id="qmodal"><div class="card" style="min-height:0;max-height:92vh;overflow:auto">
+  <h2>Love Quiz</h2>
+  <p id="qq"></p>
+  <div id="qopts" style="width:100%"></div>
+  <p id="qres" style="color:#C9707F;min-height:1.2em"></p>
+  <div class="btns"><button id="qagain" class="hide">Try again</button><button id="qclose">Close</button></div>
 </div></div>
 
 <script>
 /* ====== EDIT THESE ====== */
 var CONFIG = {
-  whatsapp: "",
-  coupons: ["One big warm hug", "A movie date, your pick", "Your favourite food, my treat", "One whole day of no arguments", "A long walk with chai", "One wish, granted"],
+  quiz: [{"q": "when you and i became us", "o": ["9", "24", "21"], "a": 0}, {"q": "who you are to me bubyy", "o": ["your home", "your peace", "your everything"], "a": 2}, {"q": "what i say you the most", "o": ["i love you", "bubu", "sorry"], "a": 0}, {"q": "when did we hugged for the 1st time", "o": ["9", "24", "7"], "a": 1}, {"q": "when is our anniversary", "o": ["9", "24", "45"], "a": 1}],
   birthday: "12-09",
   password: "9",
   hint: "its my fav number",
@@ -278,7 +282,7 @@ $('blow').onclick=function(){
   setTimeout(function(){
     show('s3');
     $('to').textContent='For '+pc(CONFIG.name);
-    type($('letter'),CONFIG.message+'\n\n- '+CONFIG.from,function(){$('replay').classList.remove('hide');$('secretbtn').classList.remove('hide');$('couponbtn').classList.remove('hide')});
+    type($('letter'),CONFIG.message+'\n\n- '+CONFIG.from,function(){$('replay').classList.remove('hide');$('secretbtn').classList.remove('hide');$('quizbtn').classList.remove('hide')});
   },1800);
 };
 
@@ -286,7 +290,7 @@ $('replay').onclick=function(){
   tries=0;no.textContent='No';no.style.position='';no.onclick=dodge;$('yes').style.transform='';
   document.querySelectorAll('.f').forEach(function(f){f.style.display=''});
   $('blow').classList.remove('hide');$('hint').textContent='Make a wish, then blow out the candles!';
-  $('replay').classList.add('hide');$('secretbtn').classList.add('hide');$('couponbtn').classList.add('hide');
+  $('replay').classList.add('hide');$('secretbtn').classList.add('hide');$('quizbtn').classList.add('hide');
   show('s1');
 };
 
@@ -329,34 +333,6 @@ $('unlock').onclick=function(){
 };
 $('pw').onkeydown=function(e){if(e.key==='Enter')$('unlock').click()};
 
-/* love coupons */
-function loadDone(){var d={};try{d=JSON.parse(localStorage.getItem('cpdone')||'{}')}catch(e){}return d}
-function saveDone(d){try{localStorage.setItem('cpdone',JSON.stringify(d))}catch(e){}}
-function renderCoupons(){
-  var done=loadDone(),box=$('cplist');box.innerHTML='';
-  CONFIG.coupons.forEach(function(c,i){
-    var b=document.createElement('button');
-    b.className='cp'+(done[i]?' used':'');
-    b.textContent=(done[i]?'REDEEMED: ':'')+c;
-    b.onclick=function(){
-      if(done[i])return;
-      done[i]=1;saveDone(done);renderCoupons();
-      hearts(25,true);confetti(30);
-      $('cpmsg').textContent='Redeemed! '+c;
-      var text='Coupon redeemed: '+c+' \u{1F495} - from '+CONFIG.name;
-      var a=$('cpsend');
-      a.href='https://wa.me/'+CONFIG.whatsapp+'?text='+encodeURIComponent(text);
-      a.textContent='Tell '+CONFIG.from;
-      if(CONFIG.whatsapp)a.classList.remove('hide');else a.classList.add('hide');
-    };
-    box.appendChild(b);
-  });
-}
-$('couponbtn').onclick=function(){
-  $('cpmsg').textContent='';$('cpsend').classList.add('hide');
-  renderCoupons();$('cpmodal').classList.remove('hide');
-};
-$('cpclose').onclick=function(){$('cpmodal').classList.add('hide')};
 
 function pc(n){return n.charAt(0).toUpperCase()+n.slice(1).toLowerCase()}
 function heartSVG(){return '<svg class="heart" viewBox="0 0 24 24"><path fill="#E58C9B" d="M12 21s-7.5-4.9-9.6-9.4C.9 8.2 2.8 4.5 6.4 4.5c2.1 0 3.9 1.1 5.6 3.2 1.7-2.1 3.5-3.2 5.6-3.2 3.6 0 5.5 3.7 4 7.1C19.5 16.1 12 21 12 21z"/></svg>'}
@@ -405,6 +381,42 @@ function stopMusic(){
 }
 document.addEventListener('visibilitychange',function(){if(document.hidden)stopMusic()});
 window.addEventListener('pagehide',stopMusic);
+
+/* love quiz */
+var qi=0,qsc=0,qlock=false;
+function qStart(){qi=0;qsc=0;qlock=false;$('qagain').classList.add('hide');qShow()}
+function qShow(){
+  var Q=CONFIG.quiz[qi];
+  $('qq').textContent=(qi+1)+' / '+CONFIG.quiz.length+'  -  '+Q.q;
+  $('qres').textContent='';
+  var box=$('qopts');box.innerHTML='';
+  Q.o.forEach(function(t,i){
+    var b=document.createElement('button');b.className='qo';b.textContent=t;
+    b.onclick=function(){qPick(i,b)};
+    box.appendChild(b);
+  });
+}
+function qPick(i,b){
+  var Q=CONFIG.quiz[qi];
+  if(i===Q.a){
+    qi++;
+    if(qi<CONFIG.quiz.length)qShow();else qEnd();
+    try{hearts(6,true)}catch(e){}
+  }else{
+    b.classList.add('no');b.disabled=true;
+    $('qres').textContent='Goluu \u2764\ufe0f choose correctly';
+  }
+}
+function qEnd(){
+  $('qq').textContent='';
+  $('qopts').innerHTML='';
+  $('qres').textContent='Love you soo much Bubuuuuuu \u2764\ufe0f\u2764\ufe0f\u2764\ufe0f\u2764\ufe0f\u2764\ufe0f\u2764\ufe0f';
+  $('qagain').classList.remove('hide');
+  try{hearts(50,true);confetti(60)}catch(e){}
+}
+$('quizbtn').onclick=function(){qStart();$('qmodal').classList.remove('hide')};
+$('qagain').onclick=qStart;
+$('qclose').onclick=function(){$('qmodal').classList.add('hide')};
 </script>
 </body>
 </html>
