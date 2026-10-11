@@ -97,6 +97,11 @@ p{font-size:clamp(22px,6vw,26px)}
 .cp{font-size:21px}
 #mcap{font-size:30px}
 input#pw{font-size:24px}
+/* HEART SPARKLES */
+.cf{background:none!important;border-radius:0!important}
+.hsp{position:fixed;pointer-events:none;z-index:0;animation:htw ease-in-out infinite;filter:drop-shadow(0 0 5px currentColor)}
+@keyframes htw{0%,100%{opacity:0;transform:scale(.3) rotate(-12deg)}50%{opacity:.95;transform:scale(1) rotate(12deg)}}
+@media (prefers-reduced-motion:reduce){.hsp{display:none}}
 </style>
 </head>
 <body>
@@ -355,6 +360,51 @@ $('cpclose').onclick=function(){$('cpmodal').classList.add('hide')};
 
 function pc(n){return n.charAt(0).toUpperCase()+n.slice(1).toLowerCase()}
 function heartSVG(){return '<svg class="heart" viewBox="0 0 24 24"><path fill="#E58C9B" d="M12 21s-7.5-4.9-9.6-9.4C.9 8.2 2.8 4.5 6.4 4.5c2.1 0 3.9 1.1 5.6 3.2 1.7-2.1 3.5-3.2 5.6-3.2 3.6 0 5.5 3.7 4 7.1C19.5 16.1 12 21 12 21z"/></svg>'}
+
+/* heart confetti + heart sparkles */
+var HP='M12 21s-7.5-4.9-9.6-9.4C.9 8.2 2.8 4.5 6.4 4.5c2.1 0 3.9 1.1 5.6 3.2 1.7-2.1 3.5-3.2 5.6-3.2 3.6 0 5.5 3.7 4 7.1C19.5 16.1 12 21 12 21z';
+function hsvg(c){return '<svg viewBox="0 0 24 24" width="100%" height="100%"><path fill="'+c+'" d="'+HP+'"/></svg>'}
+var HC=['#E58C9B','#F6B8BE','#E9B872','#C9707F','#FFD9A0','#F2A7B0'];
+function confetti(n){
+  for(var i=0;i<n;i++){
+    var d=document.createElement('div');d.className='cf';
+    var z=12+Math.random()*16;
+    d.style.width=d.style.height=z+'px';
+    d.style.left=Math.random()*100+'vw';
+    d.style.animationDuration=(2.2+Math.random()*2.5)+'s';
+    d.style.animationDelay=(Math.random()*.6)+'s';
+    d.innerHTML=hsvg(HC[i%HC.length]);
+    document.body.appendChild(d);
+    setTimeout(function(el){el.remove()},5800,d);
+  }
+}
+document.querySelectorAll('.sp,.hsp').forEach(function(e){e.remove()});
+for(var k=0;k<28;k++){
+  var h=document.createElement('div');h.className='hsp';
+  var sz=8+Math.random()*14,col=HC[k%HC.length];
+  h.style.width=h.style.height=sz+'px';
+  h.style.left=Math.random()*100+'vw';
+  h.style.top=Math.random()*100+'vh';
+  h.style.color=col;
+  h.style.animationDuration=(2+Math.random()*3)+'s';
+  h.style.animationDelay=(Math.random()*4)+'s';
+  h.innerHTML=hsvg(col);
+  document.body.appendChild(h);
+}
+
+/* AUTO PAUSE */
+function stopMusic(){
+  try{
+    var a=document.getElementById('bgm');
+    if(a&&!a.paused){
+      a.pause();
+      var m=document.getElementById('mute');
+      if(m)m.textContent='MUSIC: OFF';
+    }
+  }catch(e){}
+}
+document.addEventListener('visibilitychange',function(){if(document.hidden)stopMusic()});
+window.addEventListener('pagehide',stopMusic);
 </script>
 </body>
 </html>
