@@ -615,6 +615,20 @@ if(spEl){
   }
 })();
 /* end-beauty */
+
+/* bgm-autopause */
+(function(){
+  let wasPlaying=false;
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){
+      if(!bgm.paused){wasPlaying=true;bgm.pause();}
+    }else if(wasPlaying){
+      wasPlaying=false;
+      bgm.play().catch(()=>{});
+    }
+  });
+  window.addEventListener('pagehide',()=>{if(!bgm.paused)bgm.pause();});
+})();
 </script>
 </body>
 </html>
