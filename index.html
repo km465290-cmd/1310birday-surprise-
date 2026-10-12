@@ -101,6 +101,89 @@
   #ltxt{margin-top:10px;padding:10px 16px;border-radius:30px;border:1px solid var(--soft);
     background:rgba(255,255,255,.7);color:var(--text);font-family:inherit;font-size:16px;
     text-align:center;outline:none;width:230px}
+
+  .gal{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none;padding:6px 0 10px}
+  .gal::-webkit-scrollbar{display:none}
+  .slide{flex:0 0 100%;scroll-snap-align:center}
+  .pol{background:#fff;padding:12px 12px 16px;border-radius:6px;
+    box-shadow:0 14px 34px rgba(201,24,74,.28);transform:rotate(-1.5deg)}
+  .slide:nth-child(even) .pol{transform:rotate(1.5deg)}
+  .pol img,.ph{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:3px;display:block}
+  .ph{background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:60px}
+  .gcap{font-family:'Great Vibes',cursive;font-size:30px;color:var(--accent);margin-top:10px;line-height:1.2}
+
+  .screen.active.fromR{animation:inR .45s ease}
+  .screen.active.fromL{animation:inL .45s ease}
+  @keyframes inR{from{opacity:0;transform:translateX(70px)}to{opacity:1;transform:none}}
+  @keyframes inL{from{opacity:0;transform:translateX(-70px)}to{opacity:1;transform:none}}
+  #dots{position:fixed;bottom:16px;left:0;right:0;display:flex;justify-content:center;gap:10px;z-index:10}
+  #dots i{width:9px;height:9px;border-radius:50%;background:var(--soft);opacity:.5;transition:.3s}
+  #dots i.on{background:var(--accent);opacity:1;transform:scale(1.3)}
+
+  .envgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:10px}
+  .env{background:#fff;border:2px solid var(--soft);border-radius:14px;padding:16px 8px;
+    cursor:pointer;box-shadow:0 8px 20px rgba(201,24,74,.2);font-size:17px;font-weight:700;
+    line-height:1.25;transition:.3s}
+  .env .ei{font-size:44px;display:block;margin-bottom:4px;animation:float 3s ease-in-out infinite}
+  .env.opened{opacity:.6}
+  .env:active{transform:scale(.96)}
+  #lmodal{position:fixed;inset:0;z-index:50;background:rgba(89,13,34,.55);display:none;
+    align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+  #lmodal.show{display:flex;animation:in .4s ease}
+  .lcard{background:#fff;border-radius:8px;padding:28px 22px;max-width:400px;width:100%;
+    max-height:85vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.35);position:relative}
+  .lcard::before{content:"";position:absolute;inset:8px;border:1px solid var(--soft);
+    border-radius:4px;pointer-events:none}
+
+  /* beauty-pack */
+  .screen{position:relative;z-index:1;scrollbar-width:none}
+  .screen::-webkit-scrollbar{display:none}
+  .orb{position:fixed;border-radius:50%;filter:blur(26px);opacity:.4;pointer-events:none;
+    z-index:0;will-change:transform;animation:drift 16s ease-in-out infinite alternate}
+  @keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(34px,-46px) scale(1.25)}}
+  .spark{position:fixed;color:#FF8FA3;opacity:0;pointer-events:none;z-index:0;
+    animation:twinkle 3s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.9;transform:scale(1.2)}}
+
+  .script{background:linear-gradient(135deg,#C9184A 0%,#FF5C8A 50%,#C9184A 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    -webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 10px rgba(201,24,74,.22))}
+  h2{letter-spacing:.5px}
+
+  .line{width:auto;height:auto;background:none;margin:12px auto}
+  .line::before{content:"\2014  \2665  \2014";color:var(--soft);font-size:18px;letter-spacing:4px}
+
+  button{background:linear-gradient(135deg,#E0245E,#C9184A 60%,#FF5C8A);
+    position:relative;overflow:hidden}
+  button::after{content:"";position:absolute;top:0;left:-120%;width:55%;height:100%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.55),transparent);
+    transform:skewX(-20deg);animation:sweep 3.6s ease-in-out infinite}
+  @keyframes sweep{0%,55%{left:-120%}100%{left:150%}}
+
+  .cdbox{background:rgba(255,255,255,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.9);box-shadow:0 14px 40px rgba(201,24,74,.16)}
+  .cdrow div{border:1px solid rgba(255,143,163,.35)}
+  .paper::after{content:"\2766";position:absolute;bottom:12px;right:18px;color:var(--soft);font-size:24px}
+  .lcard{background:linear-gradient(180deg,#fff,#FFF5F7)}
+  .env{background:linear-gradient(180deg,#fff,#FFF0F3)}
+  .back{background:linear-gradient(180deg,#fff,#FFF0F3)}
+
+  .pol{position:relative}
+  .pol::before{content:"";position:absolute;top:-10px;left:50%;width:72px;height:22px;
+    transform:translateX(-50%) rotate(-3deg);background:rgba(255,187,148,.7);
+    box-shadow:0 2px 6px rgba(0,0,0,.12)}
+
+  #micbtn{box-shadow:0 0 0 10px rgba(255,143,163,.25),0 12px 30px rgba(201,24,74,.4)}
+
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  .screen.active>*:not(.emoji):not(#cd):not(.paper){animation:rise .7s ease both}
+  .screen.active>*:not(.emoji):not(#cd):not(.paper):nth-child(2){animation-delay:.08s}
+  .screen.active>*:not(.emoji):not(#cd):not(.paper):nth-child(3){animation-delay:.16s}
+  .screen.active>*:not(.emoji):not(#cd):not(.paper):nth-child(4){animation-delay:.24s}
+  .screen.active>*:not(.emoji):not(#cd):not(.paper):nth-child(5){animation-delay:.32s}
+  .screen.active>*:not(.emoji):not(#cd):not(.paper):nth-child(6){animation-delay:.4s}
+  /* end-beauty */
 </style>
 </head>
 <body>
@@ -153,6 +236,22 @@
   <p style="font-size:18px;margin:4px 0 14px">Tap each heart 💗</p>
   <div class="grid" id="grid"></div>
 </div>
+<audio id="bgm" src="song.m4a" loop preload="auto"></audio>
+<button id="mbtn" aria-label="music">🔇</button>
+<div class="screen" id="se">
+  <p class="script" style="font-size:44px">Open when...</p>
+  <p style="font-size:17px;margin:2px 0 12px">Tap an envelope 💌</p>
+  <div class="envgrid" id="envgrid"></div>
+  <button onclick="go('sp')">Back</button>
+</div>
+<div id="lmodal"><div class="lcard">
+  <p class="script" id="ltitle" style="font-size:38px"></p>
+  <div class="line"></div>
+  <p id="lbody" style="font-size:22px"></p>
+  <div class="sign">Duduu 💗</div>
+  <button id="lclose">Close</button>
+</div></div>
+<div id="dots"></div>
 <div id="lock">
   <div style="font-size:60px">💌</div>
   <p class="script" style="font-size:46px">One last step</p>
@@ -160,6 +259,13 @@
   <button id="micbtn">🎙️</button>
   <p id="lstat" style="font-size:17px;min-height:28px;margin:14px 0 4px"></p>
   <input id="ltxt" placeholder="or type it here..." autocomplete="off">
+</div>
+<div class="screen" id="sp">
+  <p class="script" style="font-size:44px">Our memories</p>
+  <p style="font-size:17px;margin:2px 0 10px">Swipe the photos 💞</p>
+  <div class="gal" id="gal"></div>
+  <p id="gcount" style="font-size:16px;margin:8px 0 0"></p>
+  <button onclick="go('sr')">Back</button>
 </div>
 <script>
 function go(id){
@@ -267,22 +373,6 @@ function updateBdayCountdown(){
 updateBdayCountdown();
 setInterval(updateBdayCountdown,1000);
 
-/* music */
-const bgm=document.getElementById('bgm'),mbtn=document.getElementById('mbtn');
-bgm.volume=0.6;
-function setIcon(){mbtn.textContent=bgm.paused?'🔇':'🎵'}
-mbtn.addEventListener('click',e=>{
-  e.stopPropagation();
-  if(bgm.paused)bgm.play().catch(()=>{});else bgm.pause();
-  setIcon();
-});
-bgm.addEventListener('play',setIcon);
-bgm.addEventListener('pause',setIcon);
-// start automatically on her first tap (browsers block autoplay otherwise)
-document.addEventListener('click',()=>{
-  if(bgm.paused&&!window.musicOff)bgm.play().catch(()=>{});
-},{once:true});
-mbtn.addEventListener('click',()=>{window.musicOff=true});
 
 /* voice-lock */
 const lockEl=document.getElementById('lock');
@@ -335,6 +425,39 @@ micbtn.addEventListener('click',startListening);
 document.getElementById('ltxt').addEventListener('input',e=>{
   if(heardLove(e.target.value))unlockSite();
 });
+
+/* gallery */
+const PHOTOS=[
+  {src:'photos/1.jpg',cap:'i love youuuuu'},
+  {src:'photos/2.jpg',cap:'my home'},
+  {src:'photos/3.jpg',cap:'my gurlllll'},
+  {src:'photos/4.jpg',cap:'my peace'},
+  {src:'photos/5.jpg',cap:'Forever 💞'}
+];
+const gal=document.getElementById('gal'),gcount=document.getElementById('gcount');
+PHOTOS.forEach(ph=>{
+  const d=document.createElement('div');d.className='slide';
+  d.innerHTML='<div class="pol"><img alt=""><div class="gcap"></div></div>';
+  const img=d.querySelector('img');
+  img.onerror=()=>{const x=document.createElement('div');x.className='ph';x.textContent='📷';img.replaceWith(x)};
+  img.src=ph.src;
+  d.querySelector('.gcap').textContent=ph.cap;
+  gal.appendChild(d);
+});
+function updCount(){
+  const i=Math.round(gal.scrollLeft/(gal.clientWidth+14));
+  gcount.textContent=(Math.min(i,PHOTOS.length-1)+1)+' / '+PHOTOS.length;
+}
+gal.addEventListener('scroll',updCount);
+updCount();
+document.addEventListener('touchstart',e=>{window.galTouch=!!e.target.closest('.gal')},{passive:true});
+const srEl=document.getElementById('sr');
+if(srEl){
+  const mb=document.createElement('button');
+  mb.textContent='Our memories 📸';
+  mb.onclick=()=>go('sp');
+  srEl.appendChild(mb);
+}
 </script>
 <script>
 /* lock-fix */
@@ -384,6 +507,114 @@ document.getElementById('ltxt').addEventListener('input',e=>{
     try{rec.start()}catch(e){}
   });
 })();
+
+/* swipe-nav */
+const ORDER=['s1','s2','s3','sr','sp','se'];
+const dotsEl=document.getElementById('dots');
+ORDER.forEach(()=>dotsEl.appendChild(document.createElement('i')));
+const _go=go;
+go=function(id){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('fromR','fromL'));
+  _go(id);
+  const i=ORDER.indexOf(id);
+  [...dotsEl.children].forEach((d,k)=>d.classList.toggle('on',k===i));
+};
+go('s1');
+function curIndex(){
+  const a=document.querySelector('.screen.active');
+  return a?ORDER.indexOf(a.id):-1;
+}
+function slide(dir){
+  if(document.getElementById('lock')||window.modalOpen)return;
+  const i=curIndex();
+  if(i<0)return;
+  const n=i+dir;
+  if(n<0||n>=ORDER.length)return;
+  const target=ORDER[n];
+  if(target==='s3'&&!window.letterShown){startCountdown();return}
+  go(target);
+  document.getElementById(target).classList.add(dir>0?'fromR':'fromL');
+}
+let sx=0,sy=0;
+document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+  if(!window.galTouch&&Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.5)slide(dx<0?1:-1);
+},{passive:true});
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight')slide(1);
+  if(e.key==='ArrowLeft')slide(-1);
+});
+
+/* music */
+const bgm=document.getElementById('bgm'),mbtn=document.getElementById('mbtn');
+bgm.volume=0.6;
+function setIcon(){mbtn.textContent=bgm.paused?'🔇':'🎵'}
+mbtn.addEventListener('click',e=>{
+  e.stopPropagation();
+  if(bgm.paused)bgm.play().catch(()=>{});else bgm.pause();
+  setIcon();
+});
+bgm.addEventListener('play',setIcon);
+bgm.addEventListener('pause',setIcon);
+document.addEventListener('click',()=>{
+  if(bgm.paused&&!window.musicOff)bgm.play().catch(()=>{});
+},{once:true});
+mbtn.addEventListener('click',()=>{window.musicOff=true});
+
+/* open-when letters */
+// EDIT: write your own letters here
+const LETTERS=[
+  {e:'💗',t:'Open when you miss me',b:"Close your eyes and think of my hug. Wherever you are, my heart is right next to you. I miss you too, always."},
+  {e:'🌧️',t:'Open when you are sad',b:"It is okay to feel low, my love. This will pass, and I will be right here holding your hand through it."},
+  {e:'🌙',t:'Open when you cannot sleep',b:"Take a deep breath. Think of all the times we laughed together. Sleep well, my baby. I am dreaming of you."},
+  {e:'😤',t:'Open when you are angry with me',b:"I am sorry, babyyy. Whatever I did, I love you more than my mistakes. Forgive me, please? 🥺"},
+  {e:'😊',t:'Open when you need a smile',b:"You are the most beautiful person I know, inside and out. Now smile for me, just once!"},
+  {e:'🎂',t:'Open on your birthday',b:"Advance happiest birthday goluuuu! You are my greatest blessing, and I will always try my bestestest to keep you happy."}
+];
+const envgrid=document.getElementById('envgrid');
+const lmodal=document.getElementById('lmodal');
+LETTERS.forEach(l=>{
+  const d=document.createElement('div');d.className='env';
+  d.innerHTML='<span class="ei"></span><span class="et"></span>';
+  d.querySelector('.ei').textContent=l.e;
+  d.querySelector('.et').textContent=l.t;
+  d.onclick=()=>{
+    document.getElementById('ltitle').textContent=l.t;
+    document.getElementById('lbody').textContent=l.b;
+    lmodal.classList.add('show');
+    window.modalOpen=true;
+    d.classList.add('opened');
+  };
+  envgrid.appendChild(d);
+});
+function closeLetter(){lmodal.classList.remove('show');window.modalOpen=false}
+document.getElementById('lclose').onclick=closeLetter;
+lmodal.addEventListener('click',e=>{if(e.target===lmodal)closeLetter()});
+const spEl=document.getElementById('sp');
+if(spEl){
+  const eb=document.createElement('button');
+  eb.textContent='Open-when letters 💌';
+  eb.onclick=()=>go('se');
+  spEl.insertBefore(eb,spEl.querySelector('button'));
+}
+
+/* beauty-pack */
+(function(){
+  const cols=['#FF8FA3','#FFBB94','#FFD0DC','#E0245E','#FF8FA3','#FFD0DC'];
+  cols.forEach((c,i)=>{
+    const o=document.createElement('div');o.className='orb';
+    const sz=100+Math.random()*150;
+    o.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+(Math.random()*100)+'vw;top:'+(Math.random()*100)+'vh;background:'+c+';animation-duration:'+(12+Math.random()*12)+'s;animation-delay:-'+(Math.random()*10)+'s';
+    document.body.prepend(o);
+  });
+  for(let i=0;i<14;i++){
+    const t=document.createElement('div');t.className='spark';t.textContent='\u2726';
+    t.style.cssText='left:'+(Math.random()*100)+'vw;top:'+(Math.random()*100)+'vh;font-size:'+(8+Math.random()*10)+'px;animation-delay:-'+(Math.random()*4)+'s;animation-duration:'+(2.5+Math.random()*3)+'s';
+    document.body.prepend(t);
+  }
+})();
+/* end-beauty */
 </script>
 </body>
 </html>
