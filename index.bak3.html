@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>For You 💗</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;600&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+/* ✏️ CHANGE COLORS HERE */
+:root{
+  --bg1:#1a1245; --bg2:#3a1c63; --bg3:#0d0b2b;   /* night sky gradient */
+  --pink:#ff8fb1;                                /* glow / accent */
+  --glass:rgba(255,255,255,.08);
+  --glass-border:rgba(255,255,255,.2);
+  --paper:#fff6e6; --ink:#5a3a4a;                /* letter paper + ink */
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Quicksand',system-ui,sans-serif;color:#fff;
+  background:linear-gradient(160deg,var(--bg3),var(--bg1) 45%,var(--bg2));
+}
+h1,.script{font-family:'Dancing Script','Brush Script MT',cursive;font-weight:700}
+
+/* ---------- background layers ---------- */
+#stars,#hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+#stars{z-index:0}#hearts{z-index:1}
+.star{position:absolute;background:#fff;border-radius:50%;opacity:.2;
+  animation:tw var(--d) ease-in-out infinite alternate}
+@keyframes tw{to{opacity:1}}
+.heart{position:absolute;bottom:-40px;color:var(--pink);opacity:0;
+  text-shadow:0 0 8px var(--pink);animation:rise var(--t) linear forwards}
+@keyframes rise{
+  0%{opacity:0;transform:translate3d(0,0,0)}
+  10%{opacity:.8}
+  90%{opacity:.6}
+  100%{opacity:0;transform:translate3d(var(--x),-115vh,0)}
+}
+
+/* ---------- pages + transitions ---------- */
+.page{
+  position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:22px;padding:24px;
+  padding-top:max(24px,env(safe-area-inset-top));
+  opacity:0;visibility:hidden;transform:translateY(24px);
+  transition:opacity .7s ease,transform .7s ease,visibility 0s linear .7s;
+}
+.page.active{
+  opacity:1;visibility:visible;transform:none;
+  transition:opacity .7s ease .15s,transform .7s ease .15s,visibility 0s;
+}
+.glass{
+  background:var(--glass);border:1px solid var(--glass-border);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-radius:24px;box-shadow:0 8px 30px rgba(0,0,0,.25);
+}
+.btn{
+  font-family:'Quicksand',sans-serif;font-weight:600;font-size:18px;color:#fff;
+  padding:13px 30px;border-radius:999px;border:1px solid var(--glass-border);
+  background:rgba(255,143,177,.25);box-shadow:0 0 18px rgba(255,143,177,.45);
+  cursor:pointer;opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .8s,transform .8s,visibility 0s .8s;
+}
+.btn.show{opacity:1;visibility:visible;transform:none;transition:opacity .8s,transform .8s}
+.btn:active{transform:scale(.95)}
+
+/* ---------- PAGE 1: lock ---------- */
+.hint{font-size:18px;letter-spacing:.5px;color:#ffd6e3}
+.lock{position:relative;width:84px;height:104px;margin-top:6px}
+.lock::before{content:"";position:absolute;inset:-45px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,143,177,.38),transparent 65%);
+  animation:glow 3s ease-in-out infinite alternate}
+@keyframes glow{from{opacity:.45}to{opacity:1}}
+.shackle{
+  position:absolute;left:50%;top:0;width:48px;height:46px;margin-left:-24px;
+  border:8px solid var(--pink);border-bottom:0;border-radius:30px 30px 0 0;
+  transform-origin:100% 100%;transition:transform .55s cubic-bezier(.3,1.6,.5,1);
+}
+.lockbody{
+  position:absolute;bottom:0;left:0;width:84px;height:64px;border-radius:16px;
+  background:linear-gradient(145deg,#ffc2d6,var(--pink));
+  box-shadow:0 0 22px rgba(255,143,177,.7);
+}
+.keyhole{position:absolute;left:50%;top:20px;width:14px;height:14px;margin-left:-7px;
+  border-radius:50%;background:#5b2a52}
+.keyhole::after{content:"";position:absolute;left:5px;top:10px;width:4px;height:14px;
+  border-radius:2px;background:#5b2a52}
+.lock.open .shackle{transform:translateY(-14px) rotate(22deg)}
+.lock.shake{animation:shake .5s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px)}
+  40%{transform:translateX(12px)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
+.burst{position:absolute;left:50%;top:60%;width:20px;height:20px;margin:-10px;border-radius:50%;
+  background:radial-gradient(circle,#fff,var(--pink) 40%,transparent 70%);opacity:0;pointer-events:none}
+.lock.open .burst{animation:burst .9s ease-out}
+@keyframes burst{0%{opacity:.95;transform:scale(1)}100%{opacity:0;transform:scale(14)}}
+
+.dots{display:flex;gap:14px;height:20px;align-items:center}
+.dots span{width:14px;height:14px;border-radius:50%;border:2px solid var(--pink);transition:background .2s,border-color .2s}
+.dots span.filled{background:var(--pink);box-shadow:0 0 10px var(--pink)}
+.dots.bad span{border-color:#ff4d6d}
+.dots.bad span.filled{background:#ff4d6d;box-shadow:0 0 10px #ff4d6d}
+
+.keypad{display:grid;grid-template-columns:repeat(3,72px);gap:14px;padding:20px}
+.key{
+  width:72px;height:72px;border-radius:50%;font-size:26px;font-family:'Quicksand',sans-serif;font-weight:600;
+  color:#fff;background:rgba(255,255,255,.1);border:1px solid var(--glass-border);cursor:pointer;
+  transition:transform .1s,background .1s;
+}
+.key:active{transform:scale(.88);background:rgba(255,143,177,.4)}
+.key.ghost{visibility:hidden}
+
+.confetti{position:fixed;z-index:9;pointer-events:none;color:var(--pink);
+  animation:burstH 1.3s ease-out forwards}
+@keyframes burstH{
+  0%{opacity:1;transform:translate(0,0) scale(1)}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4)}
+}
+
+/* ---------- PAGE 1B: unlock message ---------- */
+#unlock h1{
+  font-size:clamp(34px,10.5vw,54px);line-height:1.5;text-align:center;color:#fff;
+  text-shadow:0 0 18px var(--pink),0 0 40px rgba(255,143,177,.5);
+  opacity:0;transform:translateY(16px);transition:opacity 2s ease .6s,transform 2s ease .6s;
+}
+#unlock.active h1{opacity:1;transform:none}
+
+/* ---------- PAGE 2: letter ---------- */
+.stage{display:grid;place-items:center;width:100%}
+.stage>*{grid-area:1/1}
+.envelope{position:relative;width:260px;height:170px;perspective:800px;
+  transition:transform .8s ease,opacity .8s ease}
+.envelope.gone{opacity:0;transform:translateY(70px);pointer-events:none}
+.env-back{position:absolute;inset:0;border-radius:8px;background:#f2a7bf;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.sheet{position:absolute;left:14px;right:14px;top:12px;bottom:10px;border-radius:4px;
+  background:var(--paper);z-index:2;transition:transform .8s ease .5s}
+.env-front{position:absolute;inset:0;border-radius:8px;background:#ff9fbd;z-index:3;
+  clip-path:polygon(0 0,50% 58%,100% 0,100% 100%,0 100%)}
+.flap{position:absolute;left:0;top:0;width:100%;height:62%;background:var(--pink);z-index:4;
+  clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;
+  transition:transform .7s ease,z-index 0s .35s}
+.seal{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);z-index:5;font-size:24px;transition:opacity .3s}
+.envelope.open .flap{transform:rotateX(180deg);z-index:1}
+.envelope.open .seal{opacity:0}
+.envelope.open .sheet{transform:translateY(-70px)}
+
+.paper{
+  width:min(90vw,380px);max-height:66dvh;overflow-y:auto;padding:26px 22px;border-radius:6px;
+  background:repeating-linear-gradient(transparent 0 31px,rgba(200,150,160,.25) 31px 32px),var(--paper);
+  color:var(--ink);box-shadow:0 12px 40px rgba(0,0,0,.45);
+  opacity:0;transform:translateY(90px);pointer-events:none;transition:opacity .9s ease,transform .9s ease;
+}
+.paper.show{opacity:1;transform:none;pointer-events:auto}
+.paper h2{font-family:'Dancing Script',cursive;font-weight:700;font-size:32px;color:#c2456f;margin-bottom:12px}
+.paper p{font-family:'Patrick Hand','Quicksand',sans-serif;font-size:21px;line-height:32px;
+  opacity:0;transform:translateY(8px);transition:opacity 1s ease,transform 1s ease}
+.paper p.in{opacity:1;transform:none}
+
+/* ---------- placeholder next page ---------- */
+.card{padding:34px 28px;text-align:center;max-width:340px}
+.card h1{font-size:28px;margin-bottom:10px;text-shadow:0 0 14px var(--pink)}
+
+/* ---------- music button ---------- */
+.music{
+  position:fixed;z-index:10;top:max(14px,env(safe-area-inset-top));right:14px;
+  width:42px;height:42px;border-radius:50%;font-size:18px;color:#fff;cursor:pointer;
+  background:var(--glass);border:1px solid var(--glass-border);opacity:.8;
+}
+</style>
+<link rel="stylesheet" href="elegant.css">
+</head>
+<body>
+
+<div id="stars"></div>
+<div id="hearts"></div>
+
+<!-- 🎵 Music toggle (off by default). Set MUSIC_SRC in the script below -->
+<button class="music" id="music" aria-label="Toggle music">🔇</button>
+
+<!-- ================= PAGE 1: LOCK ================= -->
+<section class="page active" id="lock-page">
+  <div class="lock-card">
+    <p class="eyebrow">a little surprise</p>
+    <div class="lock-halo">
+      <div class="lock" id="lock">
+        <div class="shackle"></div>
+        <div class="lockbody"><span class="keyhole"></span></div>
+        <div class="burst"></div>
+      </div>
+    </div>
+    <p class="hint">Enter the key 💗</p>
+    <div class="dots" id="dots"></div>
+    <div class="keypad" id="keypad"></div>
+  </div>
+</section>
+
+<!-- ================= PAGE 1B: UNLOCK MESSAGE ================= -->
+<section class="page" id="unlock">
+  <div class="msg-card">
+    <span class="msg-badge">♥</span>
+    <p class="msg-eyebrow">for you</p>
+    <h1>Advance happiest birthday my bubyyyyyyyyyyyy 🩷</h1>
+    <div class="msg-line"></div>
+  </div>
+  <button class="btn" id="next1">Next 💌</button>
+</section>
+
+<!-- ================= PAGE 2: LETTER ================= -->
+<section class="page" id="letter">
+  <div class="stage">
+    <div class="envelope" id="envelope">
+      <div class="env-back"></div>
+      <div class="sheet"></div>
+      <div class="env-front"></div>
+      <div class="flap"></div>
+      <div class="seal">💗</div>
+    </div>
+    <div class="paper" id="paper">
+      <h2 id="dear"></h2>
+      <div id="lines"></div>
+    </div>
+  </div>
+  <button class="btn" id="next2">Next 🎁</button>
+</section>
+
+<!-- ================= PAGE 3: PLACEHOLDER (copy this block for new pages) ================= -->
+<section class="page" id="gift">
+  <div class="glass card">
+    <h1 class="script">Next surprise 🎁</h1>
+    <p>Coming soon...</p>
+  </div>
+</section>
+
+<script>
+/* ✏️ CHANGE THESE */
+const PASSCODE = "9";                 // 🔑 the key (digits only; any length works)
+const HER_NAME = "chinthana";         // 💌 her name in "Dear ___,"
+const MUSIC_SRC = "";                 // 🎵 e.g. "song.mp3" (put the file in this folder)
+const LETTER_TEXT = `Letter content will be added here.`;
+// ↑ 💌 LETTER TEXT: replace between the backticks. Each new line = one fading line.
+//    Example:
+//    i love youu
+//    (new line here for a new paragraph)
+
+/* ---------- page switching: showPage('id') ---------- */
+const hooks = { unlock: startUnlock, letter: startLetter };
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id));
+  setHeartRate(id === 'unlock' ? 250 : 900);
+  if (hooks[id]) hooks[id]();
+}
+// To add a page: add <section class="page" id="photos">…</section>
+// then call showPage('photos') from a button. Optional start code: hooks.photos = fn;
+
+/* ---------- twinkling stars ---------- */
+(function(){
+  const box = document.getElementById('stars');
+  for (let i = 0; i < 45; i++){
+    const s = document.createElement('div'), z = 1 + Math.random() * 2;
+    s.className = 'star';
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;` +
+      `--d:${2 + Math.random()*3}s;animation-delay:-${Math.random()*4}s`;
+    box.appendChild(s);
+  }
+})();
+
+/* ---------- floating hearts ---------- */
+const heartBox = document.getElementById('hearts');
+function spawnHeart(){
+  if (document.hidden || heartBox.children.length > 25) return;
+  const h = document.createElement('span');
+  h.className = 'heart'; h.textContent = '♥';
+  h.style.cssText = `left:${Math.random()*100}%;font-size:${10 + Math.random()*16}px;` +
+    `--t:${6 + Math.random()*5}s;--x:${(Math.random()-.5)*60}px`;
+  h.addEventListener('animationend', () => h.remove());
+  heartBox.appendChild(h);
+}
+let heartTimer;
+function setHeartRate(ms){ clearInterval(heartTimer); heartTimer = setInterval(spawnHeart, ms); }
+setHeartRate(900);
+
+/* ---------- keypad + lock logic ---------- */
+const lock = document.getElementById('lock');
+const dotsEl = document.getElementById('dots');
+const keypad = document.getElementById('keypad');
+let entered = '', busy = false;
+
+for (let i = 0; i < PASSCODE.length; i++) dotsEl.appendChild(document.createElement('span'));
+['1','2','3','4','5','6','7','8','9','del','0','x'].forEach(k => {
+  const b = document.createElement('button');
+  b.className = 'key' + (k === 'x' ? ' ghost' : '');
+  b.textContent = k === 'del' ? '⌫' : (k === 'x' ? '' : k);
+  b.dataset.k = k;
+  keypad.appendChild(b);
+});
+keypad.addEventListener('click', e => {
+  const k = e.target.dataset && e.target.dataset.k;
+  if (k && k !== 'x') press(k);
+});
+function renderDots(){
+  [...dotsEl.children].forEach((d, i) => d.classList.toggle('filled', i < entered.length));
+}
+function press(k){
+  if (busy) return;
+  if (navigator.vibrate) navigator.vibrate(10);
+  if (k === 'del') entered = entered.slice(0, -1);
+  else if (entered.length < PASSCODE.length) entered += k;
+  renderDots();
+  if (entered.length === PASSCODE.length) check();
+}
+function check(){
+  busy = true;
+  if (entered === PASSCODE){
+    lock.classList.add('open');
+    heartConfetti();
+    setTimeout(() => showPage('unlock'), 1900);
+  } else {
+    lock.classList.add('shake');
+    dotsEl.classList.add('bad');
+    setTimeout(() => {
+      lock.classList.remove('shake'); dotsEl.classList.remove('bad');
+      entered = ''; renderDots(); busy = false;
+    }, 700);
+  }
+}
+function heartConfetti(){
+  const r = lock.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  for (let i = 0; i < 22; i++){
+    const h = document.createElement('span');
+    const a = Math.random() * Math.PI * 2, d = 70 + Math.random() * 130;
+    h.className = 'confetti'; h.textContent = Math.random() > .5 ? '♥' : '💗';
+    h.style.cssText = `left:${cx}px;top:${cy}px;font-size:${12 + Math.random()*14}px;` +
+      `--dx:${Math.cos(a)*d}px;--dy:${Math.sin(a)*d - 30}px`;
+    h.addEventListener('animationend', () => h.remove());
+    document.body.appendChild(h);
+  }
+}
+
+/* ---------- page 1B: unlock message ---------- */
+function startUnlock(){
+  const b = document.getElementById('next1');
+  b.classList.remove('show');
+  setTimeout(() => b.classList.add('show'), 3000);   // button appears after ~3s
+}
+document.getElementById('next1').onclick = () => showPage('letter');
+
+/* ---------- page 2: letter ---------- */
+let letterStarted = false;
+function startLetter(){
+  if (letterStarted) return;
+  letterStarted = true;
+  const env = document.getElementById('envelope'), paper = document.getElementById('paper');
+  document.getElementById('dear').textContent = `Dear ${HER_NAME},`;
+  const box = document.getElementById('lines');
+  const lines = LETTER_TEXT.split('\n').map(s => s.trim()).filter(Boolean);
+  lines.forEach(t => { const p = document.createElement('p'); p.textContent = t; box.appendChild(p); });
+
+  setTimeout(() => env.classList.add('open'), 900);          // flap opens
+  setTimeout(() => env.classList.add('gone'), 2300);         // envelope drops away
+  setTimeout(() => paper.classList.add('show'), 2500);       // paper slides up
+  [...box.children].forEach((p, i) => setTimeout(() => p.classList.add('in'), 3400 + i * 1200));
+  setTimeout(() => document.getElementById('next2').classList.add('show'), 3400 + lines.length * 1200 + 600);
+}
+document.getElementById('next2').onclick = () => showPage('gift');
+
+/* ---------- music toggle (off by default) ---------- */
+const musicBtn = document.getElementById('music');
+let audio = null, musicOn = false;
+musicBtn.onclick = () => {
+  musicOn = !musicOn;
+  musicBtn.textContent = musicOn ? '🎵' : '🔇';
+  if (!MUSIC_SRC) return;                                    // placeholder until you set MUSIC_SRC
+  if (!audio){ audio = new Audio(MUSIC_SRC); audio.loop = true; audio.volume = .5; }
+  musicOn ? audio.play().catch(() => {}) : audio.pause();
+};
+</script>
+</body>
+</html>
